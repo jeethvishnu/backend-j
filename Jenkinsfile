@@ -1,4 +1,4 @@
- pipeline {
+pipeline {
     agent {
         label 'agent-2'
     }
@@ -9,60 +9,38 @@
         ansiColor('xterm')
     }
 
-    parameters {
-        choice(name: 'actions', choices: ['apply', 'destroy'], description: 'Pick something')
+    environment {
+        // appVersion is declared here for global use, but it's better initialized inside 'script' for scoping
+        def appVersion = ''
     }
 
     stages {
-        stage('init') {
+        stage('Read Version') {
+            steps {
+                script {
+                    def packageJson = readJSON file: 'backend/package.json'
+                    appVersion = packageJson.version
+                    echo "appVersion: ${appVersion}"
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
             steps {
                 sh '''
-                    cd expense-infra-dev
-                    cd 01-vpc
-                    terraform init -reconfigure
+                    cd backend
+                    npm install
+                    ls -ltr
+                    echo "appVersion: ${appVersion}"
                 '''
             }
         }
 
-        stage('plan') {
-            when {
-                expression { params.actions == 'apply' }
-            }
+        stage('Build') {
             steps {
                 sh '''
-                    cd expense-infra-dev
-                    cd 01-vpc
-                    terraform plan
-                '''
-            }
-        }
-
-        stage('deploy') {
-            when {
-                expression { params.actions == 'apply' }
-            }
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-            }
-            steps {
-                sh '''
-                    cd expense-infra-dev
-                    cd 01-vpc
-                    terraform apply -auto-approve
-                '''
-            }
-        }
-
-        stage('destroy') {
-            when {
-                expression { params.actions == 'destroy' }
-            }
-            steps {
-                sh '''
-                    cd expense-infra-dev
-                    cd 01-vpc
-                    terraform destroy -auto-approve
+                    zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
+                    ls -ltr
                 '''
             }
         }
