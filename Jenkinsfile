@@ -19,7 +19,7 @@ stages {
         steps {
             script {
                 def jsonData = readJSON file: 'package.json'
-                appVersion = jsonData.version
+                env.appVersion = jsonData.version
                 echo "versionNumber: $appVersion"
             }
             
