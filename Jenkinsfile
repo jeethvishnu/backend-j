@@ -40,6 +40,8 @@ stages {
             sh '''
                 zip -q -r backend-${appVersion}.zip . -x Jenkinsfile -x backend-${appVersion}.zip
                 ls -ltr
+                unzip -l backend-${appVersion}.zip
+                ls -ltr
             '''
         }
     }
