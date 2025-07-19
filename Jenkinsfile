@@ -1,60 +1,61 @@
 pipeline {
     agent {
-        label 'agent-2'
+        label 'agent-33'
     }
 
     options {
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time:11, unit:'MINUTES')
         disableConcurrentBuilds()
         ansiColor('xterm')
-    }
 
-    environment {
-        // appVersion is declared here for global use, but it's better initialized inside 'script' for scoping
-        def appVersion = ''
-    }
+}
 
-    stages {
-        stage('Read Version') {
-            steps {
-                script {
-                    def packageJson = readJSON file: 'package.json'
-                    appVersion = packageJson.version
-                    echo "appVersion: ${appVersion}"
-                }
+environment {
+    appVersion = ''
+}
+
+stages {
+    stage ('read version') {
+        steps {
+            script {
+                def jsonData = readJSON file: 'package.json'
+                appVersion = jsonData.version
+                echo "versionNumber: $appVersion"
             }
+            
         }
-
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    npm install
-                    ls -ltr
-                    echo "appVersion: ${appVersion}"
-                '''
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh '''
-                    zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
-                    ls -ltr
-                '''
-            }
+    }
+    stage('install dependencies') {
+        steps {
+            sh '''
+                npm install
+                ls -ltr
+                echo "versionNumber: $appVersion"
+            '''
         }
     }
 
-    post {
-        always {
-            echo 'I will always say Hello again!'
-            deleteDir()
-        }
-        success {
-            echo 'Will run if it is successful'
-        }
-        failure {
-            echo 'Will run when it has failed'
+    stage('build') {
+        steps {
+            sh '''
+                zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
+                ls -ltr
+            '''
         }
     }
 }
+
+post {
+    always {
+        echo 'will run always'
+        deleteDir()
+    }
+    success {
+        echo 'will run when it is successful'
+    }
+    failure {
+        echo 'will run when it is failed'
+    }
+}
+}
+
