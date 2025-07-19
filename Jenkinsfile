@@ -38,7 +38,7 @@ stages {
     stage('build') {
         steps {
             sh '''
-                zip -r backend.1.0.0.zip */ -x Jenkinsfile -x
+                zip -r backend.1.0.0.zip */ -x Jenkinsfile
                 
             '''
         }
