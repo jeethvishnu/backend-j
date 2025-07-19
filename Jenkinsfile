@@ -39,6 +39,7 @@ stages {
         steps {
             sh '''
                 zip -r backend.1.0.0.zip */ -x Jenkinsfile
+                ls -ltr
                 
             '''
         }
