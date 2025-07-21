@@ -54,11 +54,11 @@ stages {
         protocol: 'http',
         nexusUrl: "${nexusurl}",
         groupId: 'com.expense',
-        version: ${appVersion},
-        repository: 'backend',
+        version: "${appVersion}",
+        repository: "backend",
         credentialsId: 'nexus-auth',
         artifacts: [
-            [artifactId: 'backend',
+            [artifactId: "backend",
              classifier: '',
              file: "backend-" + "${appVersion}" + '.zip',
              type: 'zip']
