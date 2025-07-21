@@ -55,7 +55,7 @@ stages {
         nexusUrl: "${nexusurl}",
         groupId: 'com.expense',
         version: "${appVersion}",
-        repository: "backend-j",
+        repository: "backend",
         credentialsId: 'nexus',
         artifacts: [
             [artifactId: "backend",
