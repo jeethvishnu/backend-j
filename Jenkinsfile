@@ -56,7 +56,7 @@ stages {
         groupId: 'com.expense',
         version: "${appVersion}",
         repository: "backend",
-        credentialsId: 'nexus',
+        credentialsId: 'nexus-auth',
         artifacts: [
             [artifactId: "backend",
              classifier: '',
