@@ -12,6 +12,7 @@ pipeline {
 
 environment {
     appVersion = ''
+    nexusurl = 'nexus.vjeeth.site:8081'
 }
 
 stages {
@@ -42,6 +43,28 @@ stages {
                 ls -ltr
                 
             """
+        }
+    }
+
+    stage('nexus upload artifact') {
+        steps {
+            script {
+                  nexusArtifactUploader(
+        nexusVersion: 'nexus3',
+        protocol: 'http',
+        nexusUrl: "${nexusurl}",
+        groupId: 'com.expense',
+        version: ${appVersion},
+        repository: 'backend',
+        credentialsId: 'nexus-auth',
+        artifacts: [
+            [artifactId: 'backend',
+             classifier: '',
+             file: "backend-" + "${appVersion}" + '.zip',
+             type: 'zip']
+        ]
+     )
+            }
         }
     }
 }
