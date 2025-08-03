@@ -51,10 +51,10 @@ pipeline {
                         nexusUrl: "${nexusurl}",
                         groupId: 'com.expense',
                         version: "${appVersion}",
-                        repository: "backend-j",
+                        repository: "backend",
                         credentialsId: 'nexus',
                         artifacts: [[
-                            artifactId: "backend-j",
+                            artifactId: "backend",
                             classifier: '',
                             file: "backend-${appVersion}.zip",
                             type: 'zip'
